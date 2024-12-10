@@ -14,7 +14,7 @@ class Attractor ():
 
     #Intervalos de tempo
     t_span = (0, 400)  # Intervalo de tempo
-    t_eval = np.linspace(*t_span, 10000)  # Pontos de tempo para avaliação
+    t_eval = np.linspace(*t_span, 1000000)  # Pontos de tempo para avaliação
     # Definir as equações de Rössler
     @staticmethod
     def rossler(t, state, a, b, c):
@@ -32,6 +32,7 @@ class Attractor ():
     def ResolveSystem(self):
         solution = solve_ivp(self.rossler, self.t_span, self.initial_state, args=(self.a, self.b, self.c), t_eval=self.t_eval)
         self.x, self.y, self.z = solution.y
+        print(len(solution.t))
         self.t = solution.t 
     
     #Plotar a variação de uma variável no tmepo
@@ -117,10 +118,3 @@ class Attractor ():
         plt.ylabel('z')
         plt.grid(True)
         plt.show()
-    
-        
-
-
-    
-
-    

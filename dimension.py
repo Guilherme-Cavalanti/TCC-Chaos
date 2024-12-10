@@ -36,7 +36,8 @@ class Dimension ():
     cell_counts = []
     def BoxCounting(self):
         # Definir tamanhos de célula (epsilon) em uma escala logarítmica
-        self.epsilons = np.logspace(-1.3, 1.3, num=100)  # Exemplo: de 10^-2 a 10^0 (ajuste conforme o atrator)
+        #self.epsilons = np.logspace(0.9, 1.9, num=20)  # Exemplo: de 10^-2 a 10^0 (ajuste conforme o atrator)
+        self.epsilons = np.logspace(-1.02, 1.73, num=10)
         print(f"epsilons: {self.epsilons}")
 
         # Contar o número de células ocupadas para cada epsilon
@@ -49,14 +50,26 @@ class Dimension ():
         self.BoxCounting()
 
         # 5. Ajustar reta log-log
-        log_eps = np.log(1 / self.epsilons)  # log(1/epsilon)
+        #log_eps = np.log(1 / self.epsilons)  # log(1/epsilon)
+        log_eps = -np.log(self.epsilons)
         log_counts = np.log(self.cell_counts)  # log(N(epsilon))
 
         # Regressão linear para calcular a inclinação (dimensão fractal)
         slope, intercept, r_value, p_value, std_err = linregress(log_eps, log_counts)
 
-        # 6. A dimensão fractal é a inclinação da reta
+        # Generate x-values for the line
+        x = np.linspace(min(log_eps), max(log_eps), 100)  # Generate 100 points between min and max of log_eps
+
+        # Calculate corresponding y-values
+        y = slope * x + intercept
+        # A dimensão fractal é a inclinação da reta
         self.fractal_dimension = round(slope,2)
         print(f"Dimensão Fractal: {self.fractal_dimension}")
-        plt.loglog(self.epsilons, self.cell_counts, marker='o', linestyle='-', color='b')
+
+        #Plotar os dados e a reta
+        plt.scatter(log_eps, log_counts, color='blue', label='Data')
+        plt.plot(x, y, color='red', label=f'Line Regress')
+        plt.xlabel('-log(epsilon)')
+        plt.ylabel('log(N(epsilon))')        
+        plt.legend()
         plt.show()
